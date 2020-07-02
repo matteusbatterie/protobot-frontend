@@ -4,54 +4,53 @@ import axios from 'axios/index';
 import Message from './Message';
 
 const Chatbot = (props) => {
+    let _input = {};
+    let _messagesEnd = {};
+
     const [messages, setMessages] = useState([]);
 
     const df_text_query = async (text) => {
         let says = {
             speaks: 'me',
             message: {
-                text: {
-                    text: text
-                }
+                text: text
             }
         };
 
-        setMessages([...messages, says]);
-
         const response = await axios.post('/api/df_text_query', { text });
+        var msgs = response.data.fulfillmentMessages.map((message) => ({
+            speaks: 'bot',
+            message: message.text
+        }));
 
-        for (let message of response.data.fulfillmentMessages) {
-            says = {
-                speaks: 'bot',
-                message: message
-            };
-
-            setMessages([...messages, says]);
-        }
+        setMessages([...messages, says, ...msgs]);
     };
 
     const df_event_query = async (event) => {
         const response = await axios.post('/api/df_event_query', { event });
 
-        var msgs = response.data.fulfillmentMessages.map(message => {
-            console.log(message.text.text);
-            return ({
-                speaks: 'bot',
-                message: message.text
-            });
-        });
+        var msgs = response.data.fulfillmentMessages.map((message) => ({
+            speaks: 'bot',
+            message: message.text
+        }));
 
         setMessages([...messages, ...msgs]);
     };
 
+    // componentDidMount
     useEffect(() => {
         df_event_query('Welcome');
     }, []);
 
+    // componentDidUpdate
+    useEffect(() => {
+        _messagesEnd.scrollIntoView({ behavior: 'smooth' });
+        _input.focus();
+    }, [messages]);
+
     const renderMessage = (stateMessages) => {
         if (stateMessages) {
             return stateMessages.map((message, i) => {
-                console.log(message);
                 return <Message
                     key={i}
                     speaks={message.speaks}
@@ -62,14 +61,28 @@ const Chatbot = (props) => {
         return null;
     };
 
+    const _handleInputKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            df_text_query(event.target.value);
+            event.target.value = '';
+        }
+    };
+
     return (
         <div style={{ height: 400, width: 400, float: 'right' }}>
             <div id="chatbot" style={{ height: '100%', width: '100%', overflow: 'auto' }}>
                 <h2>Chatbot</h2>
                 {renderMessage(messages)}
-                <input type="text" />
+
+                <div ref={(element) => { _messagesEnd = element; }}
+                    style={{ float: 'left', clear: 'both' }}>
+                </div>
+                <input ref={(input) => { _input = input; }}
+                    autoFocus={true}
+                    type="text"
+                    onKeyPress={_handleInputKeyPress} />
             </div>
-        </div>
+        </div >
     );
 }
 
