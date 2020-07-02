@@ -19,7 +19,8 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "uuid": "^8.2.0"
+    "uuid": "^8.2.0",
+    "http-proxy-middleware": "^1.0.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -43,6 +44,5 @@
     ]
   },
   "devDependencies": {
-    "http-proxy-middleware": "^1.0.4"
   }
 }
