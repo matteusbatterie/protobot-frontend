@@ -12,6 +12,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "heroku-postbuild": "npm run build",
     "axios": "^0.19.2",
     "heroku": "^7.42.2",
     "materialize-css": "^1.0.0",
