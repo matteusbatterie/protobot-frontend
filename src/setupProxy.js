@@ -7,6 +7,6 @@ if (process.env.NODE_ENV == 'production') {
 }
 else {
     module.exports = (app) => {
-        app.use(createProxyMiddleware("/api", { target: "http://localhost:5000" }));
+        app.use(createProxyMiddleware("/api", { target: "https://protobot-backend.herokuapp.com" }));
     };
 }
