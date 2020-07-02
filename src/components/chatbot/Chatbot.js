@@ -16,7 +16,7 @@ const Chatbot = (props) => {
             }
         };
 
-        setMessages([...messages, says,]);
+        setMessages([...messages, says]);
 
         const response = await axios.post('/api/df_text_query', { text });
 
@@ -32,14 +32,16 @@ const Chatbot = (props) => {
 
     const df_event_query = async (event) => {
         const response = await axios.post('/api/df_event_query', { event });
-        for (let message of response.data.fulfillmentMessages) {
-            let says = {
-                speaks: 'bot',
-                message: message
-            };
 
-            setMessages([...messages, says]);
-        }
+        var msgs = response.data.fulfillmentMessages.map(message => {
+            console.log(message.text.text);
+            return ({
+                speaks: 'bot',
+                message: message.text
+            });
+        });
+
+        setMessages([...messages, ...msgs]);
     };
 
     useEffect(() => {
@@ -49,10 +51,11 @@ const Chatbot = (props) => {
     const renderMessage = (stateMessages) => {
         if (stateMessages) {
             return stateMessages.map((message, i) => {
+                console.log(message);
                 return <Message
                     key={i}
                     speaks={message.speaks}
-                    text={message.message.text.text} />
+                    text={message.message.text} />
             });
         }
 
