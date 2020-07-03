@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios/index';
-
+import axios from 'axios';
+import config from '../../config';
 import Message from './Message';
+
+const api = config.api.URL;
 
 const Chatbot = (props) => {
     let _input = {};
@@ -17,7 +19,7 @@ const Chatbot = (props) => {
             }
         };
 
-        const response = await axios.post('/api/df_text_query', { text });
+        const response = await axios.post(`${api}/api/df_text_query`, { text });
         var msgs = response.data.fulfillmentMessages.map((message) => ({
             speaks: 'bot',
             message: message.text
@@ -27,7 +29,7 @@ const Chatbot = (props) => {
     };
 
     const df_event_query = async (event) => {
-        const response = await axios.post('/api/df_event_query', { event });
+        const response = await axios.post(`${api}/api/df_event_query`, { event });
 
         var msgs = response.data.fulfillmentMessages.map((message) => ({
             speaks: 'bot',
